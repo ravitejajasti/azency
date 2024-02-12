@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/assets/css/node_modules/tom-select/dist/css/tom-select.bootstrap5.css">
+{% endblock %}
+
+{% block content %}
+
+
+</div>
+
+
+<!-- Content -->
+
+<div class="container content-space-2">
+<div class="col-sm text-center text-sm-start">
+    <a class="link" href="{% url 'project_list' %}">
+      <i class="bi-chevron-left small ms-1"></i> Back to Projects
+    </a>
+  </div>
+    <!-- Step Form -->
+    <form class="js-step-form" method="post">
+        {% csrf_token %}
+      <div class="row">
+        <div id="formContainer" class="col-lg-8">
+          <!-- Content Step Form -->
+          <div id="StepFormContent">
+            <!-- Card -->
+            <div id="StepBasics" class="card active">
+              <!-- Header -->
+              <div class="card-header bg-img-start" style="background-image: url(/static/assets/svg/components/card-1.svg);">
+                <div class="flex-grow-1">
+                    {% if project.id %}
+                        <h3 class="card-header-title">Edit Project - {{ project.name }}</h3>
+                    {% else %}
+                        <h3 class="card-header-title">Create a Project</h3>
+                    {% endif %}
+                </div>
+              </div>
+              <!-- End Header -->
+  
+              <!-- Body -->
+              <div class="card-body">
+            <!-- Form -->
+            <div class="row mb-3">
+                <label for="projectLogoLabel" class="form-label">Company Logo</label>
+    
+                <div class="mb-4">
+                  <!-- Media -->
+                  <div class="d-flex align-items-center">
+                    <!-- Avatar -->
+                    <label class="avatar avatar-xl avatar-circle" for="avatarUploader">
+                      <img id="avatarImg" class="avatar-img" src="/static/assets/img/160x160/img2.jpg" alt="Image Description">
+                    </label>
+    
+                    <div class="d-grid d-sm-flex gap-2 ms-4">
+                      <div class="btn btn-primary btn-sm form-attachment-btn">Upload Logo
+                        <input type="file" class="js-file-attach form-attachment-btn-label" id="avatarUploader"
+                               data-hs-file-attach-options='{
+                                  "textTarget": "#avatarImg",
+                                  "mode": "image",
+                                  "targetAttr": "src",
+                                  "resetTarget": ".js-file-attach-reset-img",
+                                  "resetImg": "/static/assets/img/160x160/img2.jpg",
+                                  "allowTypes": [".png", ".jpeg", ".jpg"]
+                               }'>
+                      </div>
+                      <!-- End Avatar -->
+    
+                      <button type="button" class="js-file-attach-reset-img btn btn-white btn-sm">Delete</button>
+                    </div>
+                  </div>
+                  <!-- End Media -->
+                </div>
+              </div>
+              <!-- End Form -->
+
+                <!-- Form -->
+                <div class="mb-4">
+                    <label for="id_name" class="form-label">Project name</label>
+                    <input type="text" class="form-control" name="name" id="id_name" {% if form.instance.name %} value= "{{ form.instance.name|escape }}" {% endif %} placeholder="ACME Corp" aria-label="Maria">
+                </div>
+                <!-- End Form -->
+
+                <!-- Form -->
+                <div class="mb-4">
+                    <label for="id_website" class="form-label">Company website</label>
+                    <input type="website" class="form-control form-control-lg" name="website" id="id_website" {% if form.instance.website %} value= "{{ form.instance.website|escape }}" {% endif %} placeholder="https://example.com" aria-label="https://example.com">
+                </div>
+                <!-- End Form -->
+
+                <!-- Form -->
+                <div class="mb-4">
+                    <label for="id_members" class="form-label">Select users</label>
+
+                <!-- Select -->
+                <div class="tom-select-custom tom-select-custom-with-tags">
+                    <select class="js-select form-select" autocomplete="off" multiple
+                            data-hs-tom-select-options='{
+                            "placeholder": "Select a user..."
+                            }' name="members" id="id_members">
+                            <option value="">Select a user...</option>
+                            <option value="1">ravitejajasti</option>
+                            <option value="2">rt</option>
+                    </select>
+                </div>
+                <!-- End Select -->
+                </div>
+                <!-- End Form -->
+
+                <!-- Form-->
+                <div class="mb-4">
+                    <label for="id_description" class="form-label">Project description</label>
+                    <div class="d-flex justify-content-end">
+                        <span id="maxLengthProjectDescriptionCountCharacters" class="form-label-secondary"></span>
+                    </div>
+
+                    <textarea class="js-count-characters form-control" name="description" id="id_description" placeholder="This is to provide an idea of what does your product do. A good short summary will entice users to click and visit your page." maxlength="70"
+                            data-hs-count-characters-options='{
+                                "output": "#maxLengthProjectDescriptionCountCharacters"
+                            }'>{% if form.instance.description %}{{ form.instance.description|escape }}{% endif %}
+                        </textarea>
+                </div>
+                <!-- End Form -->
+
+                <!-- Form -->
+                <div class="mb-4">
+                  <label for="contactInformationLabel" class="form-label">Contact information</label>
+                  <p class="small mt-n2">Only provided to employers you apply to respond to.</p>
+                  <input type="email" class="form-control" name="contactInformationName" id="contactInformationLabel" placeholder="email@site.com" aria-label="email@site.com">
+                </div>
+                <!-- End Form -->
+  
+                <!-- Form -->
+                <div class="mb-4">
+                  <label for="phoneLabel" class="form-label">Phone number</label>
+                  <p class="small mt-n2">Only provided to employers you apply to respond to.</p>
+                  <div class="input-group">
+                    <input type="text" class="js-input-mask form-control" name="phone" id="phoneLabel" placeholder="+x(xxx)xxx-xx-xx" aria-label="+x(xxx)xxx-xx-xx"
+                           data-hs-mask-options='{
+                            "mask": "+{0}(000)000-00-00"
+                          }'>
+  
+                    <!-- Select -->
+                    <select class="form-select" name="phoneSelect" style="max-width: 8rem;">
+                      <option value="Mobile" selected>Mobile</option>
+                      <option value="Home">Home</option>
+                      <option value="Work">Work</option>
+                      <option value="Fax">Fax</option>
+                      <option value="Direct">Direct</option>
+                    </select>
+                    <!-- End Select -->
+                  </div>
+                </div>
+                <!-- End Form -->
+  
+                <!-- Form -->
+                <div class="mb-4">
+                  <!-- Check -->
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="callPermissionCheckbox">
+                    <label class="form-check-label" for="callPermissionCheckbox">Call and send me text messages at this phone number</label>
+                  </div>
+                  <!-- End Check -->
+                </div>
+                <!-- End Form -->
+  
+              </div>
+              <!-- End Body -->
+
+              <!-- Footer -->
+              <div class="card-footer pt-0">
+                <div class="d-flex justify-content-end align-items-center">
+                  <button type="submit" class="btn btn-primary">
+                    Save and continue <i class="bi-chevron-right small ms-1"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- End Footer -->
+            </div>
+            <!-- End Card -->
+  
+          </div>
+  
+          <!-- Message Body -->
+          <div id="successMessageContent" style="display: none;">
+            <div class="text-center">
+              <img class="img-fluid mb-3" src="/static/assets/svg/illustrations/medal.svg" alt="Image Description" style="max-width: 15rem;">
+  
+              <div class="mb-4">
+                <h2>Successful!</h2>
+                <p>Your resume job has been successfully created.</p>
+              </div>
+  
+              <div class="d-flex justify-content-center">
+                <a class="btn btn-primary" href="../demo-jobs/employee.html">
+                  Go to profile <i class="bi-chevron-right small ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- End Message Body -->
+
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </form>
+    <!-- End Step Form -->
+  </div>
+  <!-- End Content -->
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- <script src="./node_modules/tom-select/dist/js/tom-select.complete.min.js"></script> -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script src="/static/assets/js/hs.tom-select.js"></script>
+<script>
+    (function() {
+      // INITIALIZATION OF SELECT
+      // =======================================================
+      HSCore.components.HSTomSelect.init('.js-select')
+    })()
+  </script>
+{% endblock %}
+

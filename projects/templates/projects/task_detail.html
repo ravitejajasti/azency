@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+    <h1>{{ task.name }}</h1>
+</header>
+<div class="container">
+    <p>{{ task.description }}</p>
+    <a href="{% url 'task_list' task.project.id %}">View Tasks</a> |
+    <a href="{% url 'task_edit' task.pk task.project.id %}">Edit Task</a>
+</div>
+{% endblock %}

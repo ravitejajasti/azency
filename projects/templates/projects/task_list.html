@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+</header>
+<div class="container">
+    <h1>Tasks for {{ project_id }}</h1>
+    <!-- Create new Task -->
+    <div class="d-flex justify-content-end gap-3 mb-4">
+        <a class="btn btn-primary" href="{% url 'task_create' project_id %}">Create New Task</a>
+    </div>
+    <!-- End Create New Task -->
+    <ul>
+        {% for task in tasks %}
+        <!-- List Group -->
+        <ul class="list-group">
+            <li class="list-group-item">
+              <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
+              <a href="{% url 'task_detail' task.pk project_id %}">{{ task.title }}</a>
+            </li>
+        </ul>
+        <!-- End List Group -->
+
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

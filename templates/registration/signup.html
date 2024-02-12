@@ -1,0 +1,27 @@
+<!-- register.html -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'cportal/styles.css' %}">
+</head>
+<body>
+    <div class="form-signup">
+        <h2>Register</h2>
+        <form method="post">
+            {% csrf_token %}
+                {% for field in form %}
+                    <div class="fieldWrapper">
+                        {{ field.errors }}
+                        {{ field.label_tag }} <br>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
