@@ -10,8 +10,8 @@
 
         <button type="submit">Save</button>
     </form>
-    {% if task.id %}
-    <a href="{% url 'project_detail' task.project.id %}">Back to Project</a>
+    {% if form.instance.pk %}
+    <a href="{% url 'project_detail' form.instance.project.id %}">Back to Project</a>
     {% else %}
     <a href="{% url 'project_detail' project_id %}">Back to Project</a>
     {% endif %}

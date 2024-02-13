@@ -1,19 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 <header>
-    <h1>Projects</h1>
 </header>
 
 
 <div class="container">
+  <!-- Start Col -->
+  <div class="row align-items-center">
+    <div class="col-sm-7 mb-3 mb-sm-0">
+      <h1>Projects</h1>
+    </div>
+  <!-- End Col -->
+
+    <div class="col-sm-5 text-sm-end">
+        <a class="btn btn-primary" href="{% url 'project_create' %}">Create New Project</a>
+    </div>
+  </div>
+  <!-- End Row -->
+
     <!-- Create new Project -->
     <div class="d-flex justify-content-end gap-3 mb-4">
-        <a class="btn btn-primary" href="{% url 'project_create' %}">Create New Project</a>
     </div>
     <!-- End Create New Project -->
     <ul>
         {% for project in projects %}
-        <div class="d-grid gap-5">
+        <div class="d-grid gap-5 mb-3">
             <!-- Card -->
             <a class="card card-bordered card-transition h-100" href="{% url 'task_list' project.pk %}">
               <div class="card-body row align-items-md-center">
@@ -60,7 +71,7 @@
                     <div class="col-auto">
                       <ul class="list-inline list-separator text-body small">
                         <li class="list-inline-item">
-                          <i class="bi-book me-1"></i> 7 lessons
+                          <i class="bi-book me-1"></i> {% if project.total_tasks %} {{ project.total_tasks }} Tasks {% else %} No Tasks {% endif %}
                         </li>
                         <li class="list-inline-item">
                           <i class="bi-clock me-1"></i> 7h 59m

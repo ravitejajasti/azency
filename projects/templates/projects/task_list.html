@@ -3,10 +3,21 @@
 <header>
 </header>
 <div class="container">
-    <h1>Tasks for {{ project_id }}</h1>
+    <div class="row align-items-center">
+        
+        <!-- Start Col -->
+        <div class="col-sm-7 mb-3 mb-sm-0">
+            <h1>Tasks for {{ project_id }}</h1>
+        </div>
+        <!-- End Col -->
+
+        <div class="col-sm-5 text-sm-end">
+            <a class="btn btn-primary" href="{% url 'task_create' project_id %}">Create New Task</a>
+        </div>
+    </div>
+    <!-- End Row -->
     <!-- Create new Task -->
     <div class="d-flex justify-content-end gap-3 mb-4">
-        <a class="btn btn-primary" href="{% url 'task_create' project_id %}">Create New Task</a>
     </div>
     <!-- End Create New Task -->
     <ul>
@@ -15,7 +26,7 @@
         <ul class="list-group">
             <li class="list-group-item">
               <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-              <a href="{% url 'task_detail' task.pk project_id %}">{{ task.title }}</a>
+              <a href="{% url 'task_detail' project_id task.pk %}">{{ task.title }}</a>
             </li>
         </ul>
         <!-- End List Group -->

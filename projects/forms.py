@@ -15,5 +15,12 @@ class TaskForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+
+        project_id = kwargs.pop('project_id', None)
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['parent'].required = False  # Explicitly set required to False
+
+        if project_id:
+            self.fields['assigned_to'].queryset = User.objects.filter(projects_joined=project_id)
+        else:
+            self.fields['assigned_to'].queryset = User.objects.none()
