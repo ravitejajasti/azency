@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2>Chat Rooms</h2>
+    <a href="{% url 'chat:create_room' %}" class="btn btn-primary mb-3">Create New Room</a>
+    <div class="list-group">
+        {% for room in rooms %}
+            <a href="{% url 'chat:chat_room' room.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                {{ room.name }}
+                {% if user in room.members.all %}
+                    <span class="badge bg-success">Joined</span>
+                {% else %}
+                    <span class="badge bg-primary">Join</span>
+                {% endif %}
+            </a>
+        {% empty %}
+            <p>No chat rooms available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

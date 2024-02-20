@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<header>
+
     <h1>{{ project.name }}</h1>
-</header>
-<div class="container">
+
     <p>{{ project.description }}</p>
     <a href="{% url 'task_list' project.id %}">View Tasks</a> |
     <a href="{% url 'project_edit' project.pk %}">Edit Project</a>
-</div>
+
 {% endblock %}

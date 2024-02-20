@@ -32,6 +32,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'daphne',
+
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'projects.apps.ProjectsConfig',
-    'accounts.apps.AccountsConfig'
+    'accounts.apps.AccountsConfig',
+    'chat.apps.ChatConfig',
+    
 
 ]
 
@@ -137,3 +143,14 @@ LOGIN_URL = 'login'
 
 # Define the URL to redirect users to after login (e.g., project list view)
 LOGIN_REDIRECT_URL = 'project_list'
+
+# Configure Channels
+ASGI_APPLICATION = 'azency.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],  # Configure as per your Redis setup
+        },
+    },
+}
