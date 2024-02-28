@@ -1,143 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Agency Portal</title>
-    {% load static %}
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="./favicon.ico">
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <!-- CSS Implementing Plugins -->
-    <link rel="stylesheet" href="/static/assets/vendor/hs-mega-menu/dist/hs-mega-menu.min.css">
-    {% block extra_css %}
-    {% endblock %}
+  <!-- Title -->
+  <title>Default (Classic) | Front - Admin &amp; Dashboard Template</title>
+  {% load static %}
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="../favicon.ico">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+
+  <!-- CSS Front Template -->
+
+  <link rel="preload" href="{% static 'assets/css/theme.min.css' %}" data-hs-appearance="default" as="style">
+  <link rel="preload" href="{% static 'assets/css/theme-dark.min.css' %}" data-hs-appearance="dark" as="style">
+
+  <style data-hs-appearance-onload-styles>
+    *
+    {
+      transition: unset !important;
+    }
+
+    body
+    {
+      opacity: 0;
+    }
+  </style>
+
+  <script>
+            window.hs_config = {"autopath":"@@autopath","deleteLine":"hs-builder:delete","deleteLine:build":"hs-builder:build-delete","deleteLine:dist":"hs-builder:dist-delete","previewMode":false,"startPath":"/index.html","vars":{"themeFont":"https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap","version":"?v=1.0"},"layoutBuilder":{"extend":{"switcherSupport":true},"header":{"layoutMode":"default","containerMode":"container-fluid"},"sidebarLayout":"default"},"themeAppearance":{"layoutSkin":"default","sidebarSkin":"default","styles":{"colors":{"primary":"#377dff","transparent":"transparent","white":"#fff","dark":"132144","gray":{"100":"#f9fafc","900":"#1e2022"}},"font":"Inter"}},"languageDirection":{"lang":"en"},"skipFilesFromBundle":{"dist":["assets/js/hs.theme-appearance.js' %}","assets/js/hs.theme-appearance-charts.js' %}","assets/js/demo.js' %}"],"build":["assets/css/theme.css' %}","assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside-mini-cache.js' %}","assets/js/demo.js' %}","assets/css/theme-dark.css' %}","assets/css/docs.css' %}","assets/vendor/icon-set/style.css' %}","assets/js/hs.theme-appearance.js' %}","assets/js/hs.theme-appearance-charts.js' %}","node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}","assets/js/demo.js' %}"]},"minifyCSSFiles":["assets/css/theme.css' %}","assets/css/theme-dark.css' %}"],"copyDependencies":{"dist":{"*assets/js/theme-custom.js' %}":""},"build":{"*assets/js/theme-custom.js' %}":"","node_modules/bootstrap-icons/font/*fonts/**":"assets/css"}},"buildFolder":"","replacePathsToCDN":{},"directoryNames":{"src":"./src","dist":"./dist","build":"./build"},"fileNames":{"dist":{"js":"theme.min.js' %}","css":"theme.min.css' %}"},"build":{"css":"theme.min.css' %}","js":"theme.min.js' %}","vendorCSS":"vendor.min.css' %}","vendorJS":"vendor.min.js' %}"}},"fileTypes":"jpg|png|svg|mp4|webm|ogv|json"}
+            window.hs_config.gulpRGBA = (p1) => {
+  const options = p1.split(',')
+  const hex = options[0].toString()
+  const transparent = options[1].toString()
+
+  var c;
+  if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+    c= hex.substring(1).split('');
+    if(c.length== 3){
+      c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c= '0x'+c.join('');
+    return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',' + transparent + ')';
+  }
+  throw new Error('Bad Hex');
+}
+            window.hs_config.gulpDarken = (p1) => {
+  const options = p1.split(',')
+
+  let col = options[0].toString()
+  let amt = -parseInt(options[1])
+  var usePound = false
+
+  if (col[0] == "#") {
+    col = col.slice(1)
+    usePound = true
+  }
+  var num = parseInt(col, 16)
+  var r = (num >> 16) + amt
+  if (r > 255) {
+    r = 255
+  } else if (r < 0) {
+    r = 0
+  }
+  var b = ((num >> 8) & 0x00FF) + amt
+  if (b > 255) {
+    b = 255
+  } else if (b < 0) {
+    b = 0
+  }
+  var g = (num & 0x0000FF) + amt
+  if (g > 255) {
+    g = 255
+  } else if (g < 0) {
+    g = 0
+  }
+  return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16)
+}
+            window.hs_config.gulpLighten = (p1) => {
+  const options = p1.split(',')
+
+  let col = options[0].toString()
+  let amt = parseInt(options[1])
+  var usePound = false
+
+  if (col[0] == "#") {
+    col = col.slice(1)
+    usePound = true
+  }
+  var num = parseInt(col, 16)
+  var r = (num >> 16) + amt
+  if (r > 255) {
+    r = 255
+  } else if (r < 0) {
+    r = 0
+  }
+  var b = ((num >> 8) & 0x00FF) + amt
+  if (b > 255) {
+    b = 255
+  } else if (b < 0) {
+    b = 0
+  }
+  var g = (num & 0x0000FF) + amt
+  if (g > 255) {
+    g = 255
+  } else if (g < 0) {
+    g = 0
+  }
+  return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16)
+}
+            </script>
+  {% block extra_css %}
+  {% endblock %}
 </head>
-<body>
-    <main>
-        {% include 'header.html' %}
-        
-<!-- Card Grid -->
-<div class="container content-space-2 content-space-lg-3">
-    <div class="row col-lg-divider">
-      <div class="col-lg-3">
-        <!-- Navbar -->
-        <div class="navbar-expand-lg">
-          <!-- Navbar Toggle -->
-          <div class="d-grid">
-            <button type="button" class="navbar-toggler btn btn-white mb-3" data-bs-toggle="collapse" data-bs-target="#navbarVerticalNavMenuEg1" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbarVerticalNavMenuEg1">
-              <span class="d-flex justify-content-between align-items-center">
-                <span class="text-dark">Menu</span>
-  
-                <span class="navbar-toggler-default">
-                  <i class="bi-list"></i>
-                </span>
-  
-                <span class="navbar-toggler-toggled">
-                  <i class="bi-x"></i>
-                </span>
-              </span>
-            </button>
-          </div>
-          <!-- End Navbar Toggle -->
-  
-          <!-- Navbar Collapse -->
-          <div id="navbarVerticalNavMenuEg1" class="collapse navbar-collapse">
-            <div class="d-grid gap-4 flex-grow-1">
-              <div class="d-grid">
-                <h5 class="dropdown-header">Explore</h5>
-                <a class="dropdown-item d-flex justify-content-between" href="#">All <span class="badge text-dark border rounded-pill">30+</span></a>
-                <a class="dropdown-item" href="#">Top rated</a>
-                <a class="dropdown-item" href="#">Featured</a>
-                <a class="dropdown-item" href="#">Daily tools</a>
-                <a class="dropdown-item d-flex justify-content-between" href="#">New <span class="badge text-dark border rounded-pill">18</span></a>
-                <a class="dropdown-item" href="#">Channels</a>
-              </div>
-  
-              <div class="d-grid">
-                <h5 class="dropdown-header">Categories</h5>
-                <a class="dropdown-item" href="#">API management</a>
-                <a class="dropdown-item" href="#">Code quality</a>
-                <a class="dropdown-item" href="#">Code review</a>
-                <a class="dropdown-item d-flex justify-content-between" href="#">Integration <span class="badge text-dark border rounded-pill">4</span></a>
-                <a class="dropdown-item" href="#">File management</a>
-                <a class="dropdown-item" href="#">Mobile</a>
-                <a class="dropdown-item" href="#">Monitoring</a>
-                <a class="dropdown-item" href="#">Publishing</a>
-                <a class="dropdown-item d-flex justify-content-between" href="#">Security <span class="badge text-dark border rounded-pill">20</span></a>
-                <a class="dropdown-item d-flex justify-content-between" href="#">File management <span class="badge text-dark border rounded-pill">1</span></a>
-              </div>
-  
-              <div class="d-grid">
-                <h5 class="dropdown-header">Filters</h5>
-                <a class="dropdown-item d-flex justify-content-between" href="#">Free <span class="badge text-dark border rounded-pill">9+</span></a>
-                <a class="dropdown-item" href="#">Free trial</a>
-              </div>
-  
-              <div class="d-grid">
-                <h5 class="dropdown-header">Verification</h5>
-                <a class="dropdown-item" href="#">Verified</a>
-                <a class="dropdown-item" href="#">Unverified</a>
-              </div>
-            </div>
-          </div>
-          <!-- End Navbar Collapse -->
-        </div>
-        <!-- End Navbar -->
-      </div>
-      <!-- End Col -->
-  
-      <div class="col-lg-9">
-          
-            {% block content %}
-            <!-- This block will be overridden by child templates. -->
-            {% endblock %}
-        </div>
-        <!-- End Col -->
-      </div>
-      <!-- End Row -->
-    </div>
-    <!-- End Card Grid -->        
-    </main>
 
-    <footer>
-        <p>&copy; 2024 Agency Portal</p>
-    </footer>
-    <!-- JS Global Compulsory -->
-    <!-- <script src="/static/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script> -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<body class="has-navbar-vertical-aside navbar-vertical-aside-show-xl">
 
-    
-    <!-- JS Front -->
-    <script src="/static/assets/js/hs.core.js"></script>
+  <script src="{% static 'assets/js/hs.theme-appearance.js' %}"></script>
 
-    <!-- JS Implementing Plugins -->
-    <script src="/static/assets/vendor/hs-header/dist/hs-header.min.js"></script>
-    <script src="/static/assets/vendor/hs-mega-menu/dist/hs-mega-menu.min.js"></script>
+  <!-- ========== HEADER ========== -->
+  {% include 'header.html' %}
+  <!-- ========== END HEADER ========== -->
 
-    <!-- JS Plugins Init. -->
-    <script>
-    (function() {
-        // INITIALIZATION OF HEADER
-        // =======================================================
-        new HSHeader('#header').init()
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="content" role="main" class="main">
+    <!-- Navbar Vertical -->
+    {% include 'navbar.html' %}
+    <!-- End Navbar Vertical -->
 
-
-        // INITIALIZATION OF MEGA MENU
-        // =======================================================
-        new HSMegaMenu('.js-mega-menu', {
-            desktop: {
-            position: 'left'
-            }
-        })
-    })()
-    </script>
-    {% block extra_js %}
+    <!-- Content -->
+    {% block content %}
     {% endblock %}
-    
+    <!-- End Content -->
+
+    <!-- Footer -->
+    {% include 'footer.html' %}
+    <!-- End Footer -->
+  </main>
+  <!-- ========== END MAIN CONTENT ========== -->
+
+  <!-- ========== SECONDARY CONTENTS ========== -->
+  {% block sec_content %}
+  {% endblock %}
+  <!-- ========== END SECONDARY CONTENTS ========== -->
+
+  <!-- JS Global Compulsory  -->
+  <script src="{% static 'assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/hs-form-search/dist/hs-form-search.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{% static 'assets/js/theme.min.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script>
+    (function() {
+      // INITIALIZATION OF NAVBAR VERTICAL ASIDE
+      // =======================================================
+      new HSSideNav('.js-navbar-vertical-aside').init()
+
+
+      // INITIALIZATION OF BOOTSTRAP DROPDOWN
+      // =======================================================
+      HSBsDropdown.init()
+
+
+      // INITIALIZATION OF FORM SEARCH
+      // =======================================================
+      new HSFormSearch('.js-form-search')
+    })()
+  </script>
+
+  <!-- Style Switcher JS -->
+
+  <script>
+      (function () {
+        // STYLE SWITCHER
+        // =======================================================
+        const $dropdownBtn = document.getElementById('selectThemeDropdown') // Dropdowon trigger
+        const $variants = document.querySelectorAll(`[aria-labelledby="selectThemeDropdown"] [data-icon]`) // All items of the dropdown
+
+        // Function to set active style in the dorpdown menu and set icon for dropdown trigger
+        const setActiveStyle = function () {
+          $variants.forEach($item => {
+            if ($item.getAttribute('data-value') === HSThemeAppearance.getOriginalAppearance()) {
+              $dropdownBtn.innerHTML = `<i class="${$item.getAttribute('data-icon')}" />`
+              return $item.classList.add('active')
+            }
+
+            $item.classList.remove('active')
+          })
+        }
+
+        // Add a click event to all items of the dropdown to set the style
+        $variants.forEach(function ($item) {
+          $item.addEventListener('click', function () {
+            HSThemeAppearance.setAppearance($item.getAttribute('data-value'))
+          })
+        })
+
+        // Call the setActiveStyle on load page
+        setActiveStyle()
+
+        // Add event listener on change style to call the setActiveStyle function
+        window.addEventListener('on-hs-appearance-change', function () {
+          setActiveStyle()
+        })
+      })()
+    </script>
+
+  <!-- End Style Switcher JS -->
+
+  {% block extra_js %}
+  {% endblock %}
 </body>
 </html>

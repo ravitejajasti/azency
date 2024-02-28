@@ -12,7 +12,7 @@ from django.db.models import Count
 class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
     context_object_name = 'projects'
-    login_url = '/login/'  # Redirect to this URL if not logged in
+    #login_url = '/login/'  # Redirect to this URL if not logged in
 
     template_name = 'projects/project_list.html'
 

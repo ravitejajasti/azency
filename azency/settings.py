@@ -126,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), os.path.join('/Users/ravitejajasti/Downloads/front-dashboard-v2.1.1', 'node_modules'), os.path.join('/Users/ravitejajasti/Downloads/front-dashboard-v2.1.1', 'dist'), os.path.join('/Users/ravitejajasti/Downloads/front-dashboard-v2.1.1/dist', 'assets')]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -139,7 +139,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGOUT_REDIRECT_URL = 'accounts:login'  # Adjust as needed
 # Define the login URL to redirect users to login form
-LOGIN_URL = 'login'
+LOGIN_URL = 'accounts:login'
 
 # Define the URL to redirect users to after login (e.g., project list view)
 LOGIN_REDIRECT_URL = 'project_list'

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <!-- Start Col -->
+  <div class="row align-items-center">
+    <div class="col-sm-7 mb-3 mb-sm-0">
+      <h1>Projects</h1>
+    </div>
+  <!-- End Col -->
+
+    <div class="col-sm-5 text-sm-end">
+        <a class="btn btn-primary" href="{% url 'project_create' %}">Create New Project</a>
+    </div>
+  </div>
+  <!-- End Row -->
+
+    <!-- Create new Project -->
+    <div class="d-flex justify-content-end gap-3 mb-4">
+    </div>
+    <!-- End Create New Project -->
+    <ul>
+        {% for project in projects %}
+        <div class="d-grid gap-5 mb-3">
+            <!-- Card -->
+            <a class="card card-bordered card-transition h-100" href="{% url 'task_list' project.pk %}">
+              <div class="card-body row align-items-md-center">
+                <div class="col-sm-5 mb-3 mb-sm-0">
+                  <!-- Card Pinned -->
+                  <div class="card-pinned">
+                    <img class="card-img" src="/static/assets/svg/components/card-13.svg" alt="Image Description">
+                  </div>
+                  <!-- End Card Pinned -->
+                </div>
+                <!-- End Col -->
+          
+                <div class="col-sm-7">
+                  <div class="row mb-3">
+                    <div class="col">
+                      <small class="card-subtitle text-body">DESIGN & ILLUSTRATION</small>
+                      <h3 class="card-title text-inherit">{{ project.name }}</h3>
+                    </div>
+                    <!-- End Col -->
+          
+                    <div class="col-auto">
+                      <div class="text-end">
+                        <p class="text-muted small mb-0"><del>$129.99</del></p>
+                        <h5 class="card-title text-primary">$119.99</h5>
+                      </div>
+                    </div>
+                    <!-- End Col -->
+                  </div>
+                  <!-- End Row -->
+          
+                  <div class="row align-items-center mb-2">
+                    <div class="col">
+                      <div class="avatar-group avatar-group-xs">
+                        <span class="avatar avatar-xs avatar-circle">
+                          <img class="avatar-img" src="/static/assets/img/160x160/img5.jpg" alt="Image Description">
+                        </span>
+                        <span class="avatar avatar-xs avatar-circle">
+                          <img class="avatar-img" src="/static/assets/img/160x160/img4.jpg" alt="Image Description">
+                        </span>
+                      </div>
+                    </div>
+                    <!-- End Col -->
+          
+                    <div class="col-auto">
+                      <ul class="list-inline list-separator text-body small">
+                        <li class="list-inline-item">
+                          <i class="bi-book me-1"></i> {% if project.total_tasks %} {{ project.total_tasks }} Tasks {% else %} No Tasks {% endif %}
+                        </li>
+                        <li class="list-inline-item">
+                          <i class="bi-clock me-1"></i> 7h 59m
+                        </li>
+                        <li class="list-inline-item">
+                          <i class="bi-bar-char-steps me-1"></i> All levels
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- End Col -->
+                  </div>
+                  <!-- End Row -->
+          
+                  <p class="card-text text-body">{{ project.description }}</p>
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </a>
+            <!-- End Card -->
+          </div>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
