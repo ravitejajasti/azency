@@ -70,16 +70,19 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 class TaskListView(LoginRequiredMixin, ListView):
-    model = Task
-    context_object_name = 'tasks'
+    model = Section
+    context_object_name = 'sections'
     template_name = 'projects/task_list.html'
 
     def get_queryset(self):
-        return Task.objects.filter(project_id=self.kwargs['project_id'])
+        return Section.objects.filter(project_id=self.kwargs['project_id']).prefetch_related('tasks')
+                #Task.objects.filter(project_id=self.kwargs['project_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['project_id'] = self.kwargs['project_id']
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+
         return context
 
 

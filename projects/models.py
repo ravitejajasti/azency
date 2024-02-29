@@ -10,6 +10,14 @@ class Project(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects_created')
     members = models.ManyToManyField(User, related_name='projects_joined')
 
+    def save(self, *args, **kwargs):
+        DEFAULT_SECTIONS = ['Todo', 'In Progress', 'Review', 'Complete']
+
+        is_new = self._state.adding
+        super(Project, self).save(*args, **kwargs)
+        if is_new:
+            for section_name in DEFAULT_SECTIONS:
+                Section.objects.create(name=section_name, project=self)
 
 class Section(models.Model):
     name = models.CharField(max_length=100)

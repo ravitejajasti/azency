@@ -9,7 +9,7 @@ User = get_user_model()
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'due_date', 'assigned_to', 'parent']  # Include 'parent'
+        fields = ['title', 'description', 'due_date', 'assigned_to', 'parent', 'section']  # Include 'parent'
         widgets = {
             # You can specify widgets here if needed
         }

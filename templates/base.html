@@ -125,6 +125,9 @@
 <body class="has-navbar-vertical-aside navbar-vertical-aside-show-xl">
 
   <script src="{% static 'assets/js/hs.theme-appearance.js' %}"></script>
+  
+  {% block extra_body %}
+  {% endblock %}
 
   <!-- ========== HEADER ========== -->
   {% include 'header.html' %}
