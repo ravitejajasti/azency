@@ -9,13 +9,12 @@
   
   <link rel="stylesheet" href="{% static 'node_modules/tom-select/dist/css/tom-select.bootstrap5.css' %}">
   <link rel="stylesheet" href="{% static 'node_modules/daterangepicker/daterangepicker.css' %}">
-
+  <link rel="stylesheet" href="{% static 'node_modules/flatpickr/dist/flatpickr.min.css' %}">
 {% endblock %}
 
 
 
 {% block content %}
-
 
     <!-- Content -->
     <div class="content container-fluid">
@@ -25,12 +24,12 @@
             <div class="col-sm mb-2 mb-sm-0">
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb breadcrumb-no-gutter">
-                  <li class="breadcrumb-item"><a class="breadcrumb-link" href="javascript:;">Projects</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Kanban</li>
+                  <li class="breadcrumb-item"><a class="breadcrumb-link" href="{% url 'project_list' %}">Projects</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ project.name }}</li>
                 </ol>
               </nav>
   
-              <h1 class="page-header-title">Kanban</h1>
+              <h1 class="page-header-title">{{ project.name }}</h1>
             </div>
             <!-- End Col -->
   
@@ -267,11 +266,10 @@
                 <!-- End Card -->
                 <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                   <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Colored with scrolling</h5>
+                    <h2 class="offcanvas-title" id="offcanvasRightLabel">Create a Task</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                   </div>
-                  <div class="offcanvas-body">
-                    <p>Try scrolling the rest of the page to see this option in action.</p>
+                  <div class="offcanvas-body" id="taskFormPlaceholder">
                   </div>
                 </div>
                 <!-- Add Create Project Template -->
@@ -1245,43 +1243,6 @@
       </div>
       <!-- End Tab Content -->
 
-      
-<div class="container">
-    <div class="row align-items-center">
-        
-        <!-- Start Col -->
-        <div class="col-sm-7 mb-3 mb-sm-0">
-            <h1>Tasks for {{ project.name }}</h1>
-        </div>
-        <!-- End Col -->
-
-        <div class="col-sm-5 text-sm-end">
-            <a class="btn btn-primary" href="{% url 'task_create' project_id %}">Create New Task</a>
-        </div>
-    </div>
-    <!-- End Row -->
-    <!-- Create new Task -->
-    <div class="d-flex justify-content-end gap-3 mb-4">
-    </div>
-    <!-- End Create New Task -->
-    <ul>
-      {% for section in sections %}
-      <h4>{{ section.name }}</h4>
-            {% for task in section.tasks.all %}
-        <!-- List Group -->
-        <ul class="list-group">
-            <li class="list-group-item">
-              <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-              <a href="{% url 'task_detail' project_id task.pk %}">{{ task.title }}</a>
-            </li>
-        </ul>
-        <!-- End List Group -->
-        {% empty %}
-        <p>No tasks in this section.</p>
-        {% endfor %}
-        {% endfor %}
-    </ul>
-</div>
 {% endblock %}
 
 {% block sec_contents %}
@@ -1320,8 +1281,7 @@
 
   <!-- JS Front -->
   <!-- bundlejs:theme [@@autopath] -->
-  <script src="{% static 'assets/js/hs.core.js' %}"></script>
-  <script src="{% static 'assets/js/hs.bs-dropdown.js' %}"></script>
+
   <script src="{% static 'assets/js/hs.tom-select.js' %}"></script>
   <script src="{% static 'assets/js/hs.sortable.js' %}"></script>
   <script src="{% static 'assets/js/hs.clipboard.js' %}"></script>
@@ -1367,8 +1327,9 @@
     });
   </script>
 
-
   <!-- JS Plugins Init. -->
+  <script src="{% static 'node_modules/flatpickr/dist/flatpickr.min.js' %}"></script>
+  <script src="{% static 'assets/js/hs.flatpickr.js' %}"></script>
   <script>
     (function() {
       window.onload = function () {
@@ -1384,7 +1345,7 @@
         // =======================================================
         new HSAddField('.js-add-field')
 
-
+        HSCore.components.HSFlatpickr.init('.js-flatpickr')
         // INITIALIZATION OF SELECT
         // =======================================================
         HSCore.components.HSTomSelect.init('.js-select')
@@ -1407,5 +1368,65 @@
       }
     })()
   </script>
+
+<script>
+$(document).ready(function() {
+    $(".btn-dashed-outline").click(function() {
+        $.ajax({
+            url: "{% url 'task_create' project_id %}", // Adjust URL as needed
+            type: "get",
+            dataType: "html",
+            success: function(data) {
+                $("#taskFormPlaceholder").html(data);
+            }
+        });
+    });
+});
+</script>
+<script>
+$(document).on('submit', '#taskForm', function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: "{% url 'task_create' project_id %}",
+        type: $(this).attr('method'),
+        data: $(this).serialize() + "&csrfmiddlewaretoken=" + $("input[name=csrfmiddlewaretoken]").val(),
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+      },
+        success: function(response) {
+          if(response.success) {
+            // Close the off-canvas
+            var offcanvasInstance = bootstrap.Offcanvas.getInstance($('#offcanvasRight'));
+            offcanvasInstance.hide();
+
+            // Optionally, refresh the task list or show a success message
+            alert("Task added successfully");
+        }
+        },
+        error: function(xhr, status, error) {
+          // Handle form errors
+          if (xhr.status === 400) {
+              // Clear previous errors
+              $('.form-error').remove();
+
+              // Parse the JSON response
+              var errors = JSON.parse(xhr.responseText);
+
+              // Loop through the errors and display them
+              for (var key in errors) {
+                  if (errors.hasOwnProperty(key)) {
+                      // Append each error message to the respective form field
+                      var error = errors[key].join();
+                      $('<div class="form-error">' + error + '</div>').insertAfter('#id_' + key);
+                  }
+              }
+          } else {
+              // Handle non-validation errors (optional)
+              console.error("An error occurred: ", status, error);
+          }
+      }
+    });
+});
+</script>
 
 {% endblock %}

@@ -8,6 +8,7 @@ from django.shortcuts import redirect, get_object_or_404
 from .forms import TaskForm
 from django.contrib.auth.models import User
 from django.db.models import Count
+from django.http import JsonResponse
 
 class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
@@ -76,7 +77,7 @@ class TaskListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Section.objects.filter(project_id=self.kwargs['project_id']).prefetch_related('tasks')
-                #Task.objects.filter(project_id=self.kwargs['project_id'])
+        #Task.objects.filter(project_id=self.kwargs['project_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -114,8 +115,15 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         # Associate the task with the project before saving
         project_id = self.kwargs.get('project_id')
         form.instance.project = get_object_or_404(Project, id=project_id)
-        return super().form_valid(form)
-
+        response = super().form_valid(form)
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+    
+        return response
+    def form_invalid(self, form):
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse(form.errors, status=400, safe=False)
+        return super().form_invalid(form)
 
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task

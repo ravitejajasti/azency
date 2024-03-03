@@ -1,20 +1,17 @@
-{% extends 'base.html' %}
+<form method="post" id="taskForm" novalidate action="/projects/8/tasks/new/">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="project" value="{{ form.instance.project_id }}">
+    <button class="btn btn-primary" type="submit">Create</button>
+</form>
+<script>
+    (function() {
+      // INITIALIZATION OF FLATPICKR
+      // =======================================================
+      HSCore.components.HSFlatpickr.init('.js-flatpickr')
 
-{% block content %}
-<div class="content-space-1">
-    <h2>Task Form</h2>
-    <form method="post" novalidate>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="hidden" name="project" value="{{ form.instance.project_id }}">
-
-        <button type="submit">Save</button>
-    </form>
-    {% if form.instance.pk %}
-    <a href="{% url 'project_detail' form.instance.project.id %}">Back to Project</a>
-    {% else %}
-    <a href="{% url 'project_detail' project_id %}">Back to Project</a>
-    {% endif %}
-
-</div>
-{% endblock %}
+      // INITIALIZATION OF SELECT
+      // =======================================================
+      HSCore.components.HSTomSelect.init('.js-select')
+    })();
+  </script>
