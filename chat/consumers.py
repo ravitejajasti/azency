@@ -4,6 +4,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Message, ChatRoom
 from asgiref.sync import sync_to_async
+import bleach
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -54,5 +55,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def save_message(self, room_id, user, message):
-        room = ChatRoom.objects.get(id=room_id)
-        Message.objects.create(room=room, user=user, message=message)
+        room = ChatRoom.objects.get(id=room_id)    
+    
+        # Define the list of allowed tags and attributes
+        allowed_tags = ['p', 'b', 'i', 'u', 'em', 'strong', 'a', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+        # Define allowed attributes, and optionally allow 'style' for all tags
+        allowed_attrs = {
+            'a': ['href', 'title'],
+            '*': ['style']  # This allows 'style' attribute for all tags
+        }
+        
+        # Specify allowed CSS properties within 'style' attribute
+        # If you want to allow specific CSS styles, you would need to list them here
+        allowed_styles = [
+            'color', 
+            'font-weight', 
+            'text-decoration', 
+            'font-style',
+            'font-family',
+            'text-align',
+            'background-color'
+        ]
+        
+        # Sanitize the message content with the updated rules
+        sanitized_message = message #bleach.clean(message, tags=allowed_tags, attributes=allowed_attrs,  strip=True)
+    
+        Message.objects.create(room=room, user=user, message=sanitized_message)

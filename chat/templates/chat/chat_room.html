@@ -1,57 +1,181 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extra_css %}
+<script src="https://cdn.tiny.cloud/1/ur42dgvrke8vi1m22i4tvk9wasd9pa4ulreswd7f3hcy4qwq/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<link rel="stylesheet" href="{% static 'assets/vendor/quill/dist/quill.snow.css' %}">
+
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <!-- Heading -->
-  <div class="border-bottom pb-4 mb-4">
-    <div class="row align-items-center">
-      <div class="col-sm-6 mb-2 mb-sm-0">
-        <h3 class="mb-0">Chat Room: {{ room.name }}</h3>
-      </div>
-      <!-- End Col -->
-    </div>
-    <!-- End Row -->
-  </div>
-  <!-- End Heading -->
-    <div id="chat-log">
-        <!-- Comment -->
-        <ul class="list-comment list-comment-divider mb-3 mt-3">
-        {% for message in messages %}
 
-            <!-- Item -->
-            <li class="list-comment-item border-bottom">
-            <!-- Media -->
-            <div class="d-flex align-items-start mb-3">
-                <div class="flex-shrink-0">
-                <img class="avatar avatar-sm avatar-circle" src="{% static 'assets/img/160x160/img3.jpg' %}" alt="Image Description">
+<!-- Content -->
+<div class="content container-fluid">
+    <div class="row justify-content-lg-center">
+      <div class="col-lg-10">
+        <div class="d-grid gap-3 gap-lg-5">
+            <!-- Card -->
+            <div class="card mb-3">
+              <!-- Header -->
+              <div class="card-header card-header-content-between">
+                <h4 class="card-header-title">Room {{room.id}}: {{ room.name }}</h4>
+      
+                <!-- Dropdown -->
+                <div class="dropdown">
+                  <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm rounded-circle" id="contentActivityStreamDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi-three-dots-vertical"></i>
+                  </button>
+      
+                  <div class="dropdown-menu dropdown-menu-end mt-1" aria-labelledby="contentActivityStreamDropdown">
+                    <span class="dropdown-header">Settings</span>
+      
+                    <a class="dropdown-item" href="#">
+                      <i class="bi-share-fill dropdown-item-icon"></i> Share connections
+                    </a>
+                    <a class="dropdown-item" href="#">
+                      <i class="bi-info-circle dropdown-item-icon"></i> Suggest edits
+                    </a>
+      
+                    <div class="dropdown-divider"></div>
+      
+                    <span class="dropdown-header">Feedback</span>
+      
+                    <a class="dropdown-item" href="#">
+                      <i class="bi-chat-left-dots dropdown-item-icon"></i> Report
+                    </a>
+                  </div>
                 </div>
+                <!-- End Dropdown -->
+              </div>
+              <!-- End Header -->
+      
+              <!-- Body -->
+              <div class="card-body card-body-height" id="chat-log" style="height: 20rem;">
 
-                <div class="flex-grow-1 ms-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ message.user.username }}</h5>
-                    <span class="d-block small text-muted">April 3, 2019</span>
+              <!-- Comment -->
+                <ul class="list-comment list-comment-divider mb-3 mt-3">
+                    {% for message in messages %}
+            
+                <!-- Item -->
+                <li>
+                <!-- Media -->
+                <div class="d-flex align-items-start mb-3">
+                    <div class="flex-shrink-0">
+                    <img class="avatar avatar-sm avatar-circle" src="{% static 'assets/img/160x160/img3.jpg' %}" alt="Image Description">
+                    </div>
+    
+                    <div class="flex-grow-1 ms-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ message.user.username }}</h5>
+                        <span class="d-block small text-muted">April 3, 2019</span>
+                    </div>
+                    <!-- Start Message -->
+                    <div class="mb-5">
+                        <div>{{ message.message|safe }}</div>
+                    </div>
+                    <!-- End Message -->
+                    </div>
                 </div>
-                <!-- Start Message -->
-                <div class="mb-5">
-                    <p>{{ message.message }}</p>
-                </div>
-                <!-- End Message -->
-                </div>
+                <!-- End Media -->
+                </li>
+                <!-- End Item -->
+                {% endfor %}
+    
+            </ul>
+            <!-- End Comment -->
+              </div>
+              <!-- End Body -->
             </div>
-            <!-- End Media -->
-            </li>
-            <!-- End Item -->
-            {% endfor %}
+            <!-- End Card -->
+          </div>
+      
+          <!-- Sticky Block End Point -->
+          <div id="stickyBlockEndPoint"></div>
+          <!-- TinyMCE Form -->
+          <form id="message-form">
+            <textarea id="message-input" name="content"></textarea>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+        {{ room.id|json_script:'room-id' }}
+          <!-- End TinyMCE Form -->
 
-        </ul>
-        <!-- End Comment -->
+        </div>
     </div>
-    <input id="chat-message-input" type="text" size="100">
-    <input id="chat-message-submit" type="button" value="Send">
-    {{ room.id|json_script:'room-id' }}
+</div>
+
+
+
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'assets/vendor/quill/dist/quill.min.js' %}"></script>
+
+<script>
+    tinymce.init({
+        selector: '#message-input',
+        theme: 'silver',
+        plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table directionality emoticons template paste textcolor colorpicker textpattern',
+        toolbar: 'sendMessage | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+        menubar: false, // Hides the menu bar
+        height: 150,
+        // Custom formats
+        formats: {
+          alignleft: {selector: 'p', styles: {textAlign: 'left'}},
+          aligncenter: {selector: 'p', styles: {textAlign: 'center'}},
+          alignright: {selector: 'p', styles: {textAlign: 'right'}},
+          alignjustify: {selector: 'p', styles: {textAlign: 'justify'}},
+          bold: {inline: 'span', styles: {fontWeight: 'bold'}},
+          italic: {inline: 'span', styles: {fontStyle: 'italic'}},
+          // Add or override formats here
+        },
+      
+        // Additional style formats
+        style_formats: [
+          {title: 'Headers', items: [
+            {title: 'Header 1', format: 'h1'},
+            {title: 'Header 2', format: 'h2'},
+            {title: 'Header 3', format: 'h3'},
+            {title: 'Header 4', format: 'h4'},
+            {title: 'Header 5', format: 'h5'},
+            {title: 'Header 6', format: 'h6'}
+          ]},
+          {title: 'Inline', items: [
+            {title: 'Bold', format: 'bold'},
+            {title: 'Italic', format: 'italic'},
+            {title: 'Underline', format: 'underline'},
+            {title: 'Strikethrough', format: 'strikethrough'},
+            {title: 'Superscript', format: 'superscript'},
+            {title: 'Subscript', format: 'subscript'},
+            {title: 'Code', format: 'code'}
+          ]},
+          {title: 'Blocks', items: [
+            {title: 'Paragraph', format: 'p'},
+            {title: 'Blockquote', format: 'blockquote'},
+            {title: 'Div', format: 'div'},
+            {title: 'Pre', format: 'pre'}
+          ]},
+          {title: 'Alignment', items: [
+            {title: 'Left', format: 'alignleft'},
+            {title: 'Center', format: 'aligncenter'},
+            {title: 'Right', format: 'alignright'},
+            {title: 'Justify', format: 'alignjustify'}
+          ]}
+          // You can add more custom styles here
+        ],
+        // Additional configuration options as needed for your use case
+        setup: function(editor) {
+            editor.ui.registry.addButton('sendMessage', {
+                text: 'Send',
+                icon: 'send', // Make sure this icon is available or use a fallback
+                onAction: function() {
+                    // Execute your send action here
+                    document.querySelector('#message-form').dispatchEvent(new Event('submit', {cancelable: true}));
+                }
+            });
+    
+            // Additional setup code here...
+        },
+    });
+</script>
 <script>
     const roomName = JSON.parse(document.getElementById('room-id').textContent);
     const chatSocket = new WebSocket(
@@ -64,20 +188,70 @@
 
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        document.querySelector('#chat-log').innerHTML += (data.user + ': ' + data.message + '\n');
+        document.querySelector('#chat-log').innerHTML += (data.user + ': ' + '<div>' + data.message + '</div>' + '\n');
     };
 
     chatSocket.onclose = function(e) {
         console.error('Chat socket closed unexpectedly');
     };
 
-    document.querySelector('#chat-message-submit').onclick = function(e) {
-        const messageInputDom = document.getElementById('chat-message-input');
-        const message = messageInputDom.value;
+    document.querySelector('#message-form').onsubmit = function(e) {
+        e.preventDefault();
+        const messageInputDom = tinymce.get("message-input").getContent();
+        const message = messageInputDom;
         chatSocket.send(JSON.stringify({
             'message': message
         }));
-        messageInputDom.value = '';
+        tinymce.get("message-input").setContent('');
     };
 </script>
+<script>
+    // Function to scroll to the bottom of the chat log
+    function scrollToBottom() {
+        const chatLog = document.getElementById('chat-log');
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Call scrollToBottom on page load
+    window.onload = function() {
+        scrollToBottom();
+    };
+</script>
+
 {% endblock %}
+
+###########
+<script>
+    (function() {
+        window.onload = function () {
+        // INITIALIZATION OF QUILLJS EDITOR
+        // =======================================================
+        HSCore.components.HSQuill.init('.js-quill')
+        HSCore.components.HSQuill.init('.js-quill-step')
+    }
+})()
+</script>
+        <!-- Quill -->
+        <div class="quill-custom">
+            <div class="js-quill" style="height: 15rem;" data-hs-quill-options='{
+                    "placeholder": "Type your description...",
+                    "modules": {
+                    "toolbar": [
+                        ["bold", "italic", "underline", "strike", "link", "image", "blockquote", "code", {"list": "bullet"}]
+                    ]
+                    }
+                    }'>
+            </div>
+            </div>
+            <!-- End Quill -->
+            <!-- </div> -->
+            <!-- Body -->
+    
+            <!-- Footer -->
+            <div class="card-footer">
+                <div class="d-flex justify-content-end gap-3">
+                <button type="submit" class="btn btn-white">Discard</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+            <!-- End Footer -->
