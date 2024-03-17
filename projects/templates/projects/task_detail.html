@@ -4,5 +4,5 @@
     <h1>{{ task.title }}</h1>
     <p>{{ task.description }}</p>
     <a href="{% url 'task_list' task.project.id %}">View Tasks</a> |
-    <a href="{% url 'task_edit' task.pk task.project.id %}">Edit Task</a>
+    <a href="{% url 'task_edit' task.project.id task.pk %}">Edit Task</a>
 {% endblock %}

@@ -117,9 +117,16 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         form.instance.project = get_object_or_404(Project, id=project_id)
         response = super().form_valid(form)
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': True})
+            data = {
+                'success': True,
+                'redirect_url': self.get_success_url(),
+                'message': f'Task created successfully. ',
+                'pk': self.object.pk
+            }
+            return JsonResponse(data)
+        else:
+            return response
     
-        return response
     def form_invalid(self, form):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse(form.errors, status=400, safe=False)
@@ -135,6 +142,27 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         kwargs = super(TaskUpdateView, self).get_form_kwargs()
         kwargs['project_id'] = self.object.project_id
         return kwargs
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        response = super(TaskUpdateView, self).form_valid(form)
+        # Manually check for the 'X-Requested-With' header to identify AJAX requests
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            data = {
+                'success': True,
+                'redirect_url': self.get_success_url(),
+                'message': f'Task updated successfully. ',
+                'pk': self.kwargs.get('pk')
+            }
+            return JsonResponse(data)
+        else:
+            return response
+            
+    def form_invalid(self, form):
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse(form.errors, status=400, safe=False)
+        return super().form_invalid(form)
 
     def get_success_url(self):
         return reverse_lazy('task_detail', kwargs={'project_id': self.object.project.id, 'pk': self.object.pk})
