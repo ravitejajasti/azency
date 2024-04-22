@@ -1,7 +1,7 @@
 from django.views.generic import ListView
 from .models import Project, Task, Section
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
@@ -9,6 +9,7 @@ from .forms import TaskForm
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import JsonResponse
+from django.shortcuts import render
 
 class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
@@ -85,13 +86,68 @@ class TaskListView(LoginRequiredMixin, ListView):
         context['project'] = Project.objects.get(id=self.kwargs['project_id'])
 
         return context
+    def get(self, request, *args, **kwargs):
+        tasks = Task.objects.all()  # Or filter as per your requirements
+        self.object_list = self.get_queryset()  # Utilize the customized queryset
+        context = self.get_context_data()
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            # Handle AJAX request; return only the partial content
+            return render(request, 'projects/partials/task_list.html', context)
+        
+        # Handle regular request; return the full page
+        return render(request, 'projects/task_list.html', context)
 
-
-class TaskDetailView(LoginRequiredMixin, DetailView):
+class TaskDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Task
     context_object_name = 'task'
     template_name = 'projects/task_detail.html'
+    form_class = TaskForm
 
+    def get_form_kwargs(self):
+        # Ensure we're passing instance to the form to populate it with existing values
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.object  # Here, 'self.object' is the Task instance being detailed
+        if hasattr(self.object, 'project_id'):
+            kwargs['project_id'] = self.object.project_id
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        # This is necessary to handle post requests
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        form.save()
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            data = {
+                'success': True,
+                'redirect_url': self.get_success_url(),
+                'message': 'Task updated successfully.',
+                'pk': self.kwargs.get('pk'),
+            }
+            return JsonResponse(data)
+        else:
+            return super().form_valid(form)
+
+    def form_invalid(self, form):
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse(form.errors, status=400, safe=False)
+        else:
+            return super().form_invalid(form)
+
+    def get_success_url(self):
+        # Redirects after a successful update
+        return reverse_lazy('task_detail', kwargs={'project_id': self.object.project.id, 'pk': self.object.pk})
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        context = self.get_context_data(form=form)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return render(request, 'projects/partials/task_form.html', context)
+        return render(request, self.template_name, context)
+    
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = 'projects/task_form.html'
@@ -166,3 +222,13 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('task_detail', kwargs={'project_id': self.object.project.id, 'pk': self.object.pk})
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        context = self.get_context_data(form=form)
+        # Render the partial page for AJAX requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return render(request, 'projects/partials/task_form.html', context)
+        # Render the full page for non-AJAX requests
+        return render(request, 'projects/partials/task_form.html', context)

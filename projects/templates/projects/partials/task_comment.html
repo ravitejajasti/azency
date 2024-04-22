@@ -1,0 +1,121 @@
+   {% load static %}
+<link rel="stylesheet" href="{% static 'assets/vendor/quill/dist/quill.snow.css' %}">
+<!-- Card -->
+    <div class="mt-3 mb-3 mb-lg-5">
+    <!-- Header -->
+    <div class="card-header card-header-content-between">
+        <h4 class="card-header-title">Timeline</h4>
+
+        <!-- Checkbox -->
+        <div class="form-check">
+        <input id="showCommentsCheckbox" type="checkbox" class="form-check-input" checked>
+        <label class="form-check-label" for="showCommentsCheckbox">Show comments</label>
+        </div>
+        <!-- End Checkbox -->
+    </div>
+    <!-- End Header -->
+
+    <!-- Body -->
+    <div class="card-body">
+        <!-- Step -->
+        <ul class="step step-icon-sm">
+        <!-- Step Item -->
+        <li class="step-item">
+            <div class="step-content-wrapper">
+            <span class="step-icon step-icon-soft-primary">A</span>
+
+            <!-- Quill -->
+            <div class="quill-custom">
+                <div class="js-quill-step" style="height: 15rem;"
+                    data-hs-quill-options='{
+                    "placeholder": "Type your description...",
+                    "modules": {
+                        "toolbar": [
+                        ["bold", "italic", "underline", "strike", "link", "image", "blockquote", "code", {"list": "bullet"}]
+                        ]
+                    }
+                    }'>
+                </div>
+            </div>
+            <!-- End Quill -->
+            </div>
+        </li>
+        <!-- End Step Item -->
+
+        <!-- Step Item -->
+        <li class="step-item">
+            <div class="step-content-wrapper">
+            <small class="step-divider">Wednesday, 19 August</small>
+            </div>
+        </li>
+        <!-- End Step Item -->
+
+        <!-- Step Item -->
+        <li class="step-item">
+            <div class="step-content-wrapper">
+            <span class="step-icon step-icon-soft-dark step-icon-pseudo"></span>
+
+            <div class="step-content">
+                <h5 class="mb-0">You submitted a customer data request.</h5>
+                <p class="fs-5 mb-0">10:19 AM</p>
+            </div>
+            </div>
+        </li>
+        <!-- End Step Item -->
+
+        <!-- Step Item -->
+        <li class="step-item">
+            <div class="step-content-wrapper">
+            <span class="step-icon step-icon-soft-dark step-icon-pseudo"></span>
+
+            <div class="step-content">
+                <h5 class="mb-0">You added the email anne@gmail.com to this customer.</h5>
+                <p class="fs-5 mb-0">10:18 AM</p>
+            </div>
+            </div>
+        </li>
+        <!-- End Step Item -->
+
+        <!-- Step Item -->
+        <li class="step-item">
+            <div class="step-content-wrapper">
+            <span class="step-icon step-icon-soft-dark step-icon-pseudo"></span>
+
+            <div class="step-content">
+                <h5 class="mb-0">You created this customer.</h5>
+                <p class="fs-5 mb-0">10:18 AM</p>
+            </div>
+            </div>
+        </li>
+        <!-- End Step Item -->
+        </ul>
+        <!-- End Step -->
+    </div>
+    <!-- End Body -->
+    </div>
+    <!-- End Card -->
+
+    <script src="{% static 'assets/vendor/quill/dist/quill.min.js' %}"></script>
+    <script src="{% static 'assets/js/hs.quill.js' %}"></script>
+    <script>
+      (function() {
+          window.onload = function () {
+          // INITIALIZATION OF QUILLJS EDITOR
+          // =======================================================
+          HSCore.components.HSQuill.init('.js-quill')
+          HSCore.components.HSQuill.init('.js-quill-step')
+      }
+    })()
+    </script>
+    <script>
+      var quill = new Quill('.js-quill-step', {
+        theme: 'snow',
+        placeholder: 'Type your description...',
+            modules: {
+                toolbar: [
+                    ["bold", "italic", "underline", "strike", "link", "image", "blockquote", "code", {"list": "bullet"}]
+                ]
+            }
+      });
+    </script>
+    
