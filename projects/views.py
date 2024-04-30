@@ -150,7 +150,7 @@ class TaskDetailView(LoginRequiredMixin, FormMixin, DetailView):
     
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
-    template_name = 'projects/task_form.html'
+    template_name = 'projects/partials/task_form.html'
     form_class = TaskForm
 
     def get_form_kwargs(self):
@@ -193,6 +193,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     #fields = ['title', 'description', 'status', 'due_date', 'assigned_to', 'parent', 'section']
     form_class = TaskForm
     template_name = 'projects/task_form.html'
+
 
     def get_form_kwargs(self):
         kwargs = super(TaskUpdateView, self).get_form_kwargs()

@@ -292,7 +292,7 @@ $(document).ready(function() {
 <script>
   $(document).ready(function() {
     // Delegate click event to dynamically loaded elements as well
-    $('[data-bs-target="#offcanvasRightUpdate"]').click(function() {
+    $(document).on('click', '[data-bs-target="#offcanvasRightUpdate"]', function() {
       console.log("Canvas opened")
       var task_Id = $(this).data('task-id');
       console.log(task_Id)
@@ -423,7 +423,7 @@ $(document).ready(function() {
                 // Optionally, refresh the task list or show a success message
                 const liveToast = new bootstrap.Toast(document.querySelector('#liveToast'));  
                 liveToast.show();
-                // refreshTaskList();  // Refresh the task list
+                refreshTaskList();  // Refresh the task list
               } else {
                   alert(response.message);
               }

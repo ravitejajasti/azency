@@ -19,10 +19,27 @@
     <div class="card-body">
         <!-- Step -->
         <ul class="step step-icon-sm">
+
+        {% for comment in task.comments.all %}
         <!-- Step Item -->
         <li class="step-item">
             <div class="step-content-wrapper">
-            <span class="step-icon step-icon-soft-primary">A</span>
+            <span class="step-icon step-icon-soft-primary">{{ comment.author.username|slice:":2"|upper }}</span>
+            <div class="step-content">
+                <h5 class="mb-0">{{ comment.author }}</h5>
+                <p class="fs-5 mb-0">{{ comment.created_at }}</p>
+                <br>
+                <p>{{ comment.content }}</p>
+            </div>
+            </div>
+        </li>
+        <!-- End Step Item -->
+        {% endfor %}
+
+        <!-- Step Item -->
+        <li class="step-item">
+            <!-- <div class="step-content-wrapper">
+            <span class="step-icon step-icon-soft-primary">A</span> -->
 
             <!-- Quill -->
             <div class="quill-custom">
@@ -38,54 +55,7 @@
                 </div>
             </div>
             <!-- End Quill -->
-            </div>
-        </li>
-        <!-- End Step Item -->
-
-        <!-- Step Item -->
-        <li class="step-item">
-            <div class="step-content-wrapper">
-            <small class="step-divider">Wednesday, 19 August</small>
-            </div>
-        </li>
-        <!-- End Step Item -->
-
-        <!-- Step Item -->
-        <li class="step-item">
-            <div class="step-content-wrapper">
-            <span class="step-icon step-icon-soft-dark step-icon-pseudo"></span>
-
-            <div class="step-content">
-                <h5 class="mb-0">You submitted a customer data request.</h5>
-                <p class="fs-5 mb-0">10:19 AM</p>
-            </div>
-            </div>
-        </li>
-        <!-- End Step Item -->
-
-        <!-- Step Item -->
-        <li class="step-item">
-            <div class="step-content-wrapper">
-            <span class="step-icon step-icon-soft-dark step-icon-pseudo"></span>
-
-            <div class="step-content">
-                <h5 class="mb-0">You added the email anne@gmail.com to this customer.</h5>
-                <p class="fs-5 mb-0">10:18 AM</p>
-            </div>
-            </div>
-        </li>
-        <!-- End Step Item -->
-
-        <!-- Step Item -->
-        <li class="step-item">
-            <div class="step-content-wrapper">
-            <span class="step-icon step-icon-soft-dark step-icon-pseudo"></span>
-
-            <div class="step-content">
-                <h5 class="mb-0">You created this customer.</h5>
-                <p class="fs-5 mb-0">10:18 AM</p>
-            </div>
-            </div>
+            <!-- </div> -->
         </li>
         <!-- End Step Item -->
         </ul>
