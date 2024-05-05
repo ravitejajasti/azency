@@ -4,7 +4,7 @@
     <h1>{{ task.title }}</h1>
     {% include "projects/partials/task_form.html" %}
     <p>{{ task.description }}</p>
-    <a href="{% url 'task_list' task.project.id %}">View Tasks</a> |
-    <a href="{% url 'task_edit' task.project.id task.pk %}">Edit Task</a>
+    <a href="{% url 'projects:task_list' task.project.id %}">View Tasks</a> |
+    <a href="{% url 'projects:task_edit' task.project.id task.pk %}">Edit Task</a>
 {% endblock %}
 

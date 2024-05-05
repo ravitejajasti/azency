@@ -3,6 +3,8 @@ from .views import ProjectListView, ProjectDetailView, ProjectCreateView, Projec
 from django.conf.urls.static import static
 from django.conf import settings
 
+app_name = 'projects'
+
 urlpatterns = [
     path('', ProjectListView.as_view(), name='project_list'),
     path('<int:pk>/', ProjectDetailView.as_view(), name='project_detail'),

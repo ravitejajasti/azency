@@ -233,3 +233,19 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
             return render(request, 'projects/partials/task_form.html', context)
         # Render the full page for non-AJAX requests
         return render(request, 'projects/partials/task_form.html', context)
+    
+from rest_framework.generics import ListAPIView
+from .serializers import ProjectSerializer, TaskSerializer
+
+class ProjectListAPIView(ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+class TaskListAPIView(ListAPIView):
+    queryset = Task.objects.all().select_related('project')  # Improve performance
+
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        project_id = self.kwargs['project_id']
+        return Task.objects.filter(project_id=project_id)

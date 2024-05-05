@@ -352,7 +352,7 @@
               </div>
             </td>
             <td class="table-column-ps-0">
-              <a class="d-flex align-items-center" href="{% url 'task_list' project.pk %}">
+              <a class="d-flex align-items-center" href="{% url 'projects:task_list' project.pk %}">
                 <img class="avatar" src="{% static 'assets/svg/brands/guideline-icon.svg' %}" alt="Image Description">
                 <div class="ms-3">
                   <span class="d-block h5 text-inherit mb-0">{{ project.name }}</span>

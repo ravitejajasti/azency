@@ -392,9 +392,27 @@ $(document).ready(function() {
         }
     });
   }
-  $(".btn-close").click(function() {
-    // refreshTaskList();
+  $(document).on('click', ".btn-close", function() {
+    refreshTaskList();
   });
+  $(document).ready(function() {
+    var offcanvasElement = $('#offcanvasRightUpdate')[0];
+
+    // Bootstrap offcanvas instance
+    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+
+    // Listener for closing the offcanvas
+    $(document).on('hidden.bs.offcanvas', '#offcanvasRightUpdate', function () {
+      refreshTaskList();
+    });
+
+    // Optionally, close offcanvas when clicking a specific button
+    $(document).on('click', '#offcanvasRightUpdate', function() {
+        bsOffcanvas.hide(); // This will also trigger the 'hidden.bs.offcanvas' event
+    });
+
+
+});
 
   // Detect any change in the form
   $(document).on('change', '#taskForm', function(e) {
@@ -423,7 +441,7 @@ $(document).ready(function() {
                 // Optionally, refresh the task list or show a success message
                 const liveToast = new bootstrap.Toast(document.querySelector('#liveToast'));  
                 liveToast.show();
-                refreshTaskList();  // Refresh the task list
+                // refreshTaskList();  // Refresh the task list
               } else {
                   alert(response.message);
               }
