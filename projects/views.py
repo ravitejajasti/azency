@@ -138,7 +138,7 @@ class TaskDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
     def get_success_url(self):
         # Redirects after a successful update
-        return reverse_lazy('task_detail', kwargs={'project_id': self.object.project.id, 'pk': self.object.pk})
+        return reverse_lazy('projects:task_detail', kwargs={'project_id': self.object.project.id, 'pk': self.object.pk})
     
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -222,7 +222,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('task_detail', kwargs={'project_id': self.object.project.id, 'pk': self.object.pk})
+        return reverse_lazy('projects:task_detail', kwargs={'project_id': self.object.project.id, 'pk': self.object.pk})
     
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -242,7 +242,7 @@ class ProjectListAPIView(ListAPIView):
     serializer_class = ProjectSerializer
 
 class TaskListAPIView(ListAPIView):
-    queryset = Task.objects.all().select_related('project')  # Improve performance
+    queryset = Task.objects.all().select_related('project').prefetch_related('comments')  # Improve performance
 
     serializer_class = TaskSerializer
 

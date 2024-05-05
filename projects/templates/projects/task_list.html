@@ -46,7 +46,7 @@
             <div class="col-sm mb-2 mb-sm-0">
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb breadcrumb-no-gutter">
-                  <li class="breadcrumb-item"><a class="breadcrumb-link" href="{% url 'project_list' %}">Projects</a></li>
+                  <li class="breadcrumb-item"><a class="breadcrumb-link" href="{% url 'projects:project_list' %}">Projects</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ project.name }}</li>
                 </ol>
               </nav>
@@ -276,7 +276,7 @@
 $(document).ready(function() {
     $(".btn-dashed-outline").click(function() {
         $.ajax({
-            url: "{% url 'task_create' project_id %}", // Adjust URL as needed
+            url: "{% url 'projects:task_create' project_id %}", // Adjust URL as needed
             type: "get",
             dataType: "html",
             cache: false,
@@ -297,7 +297,7 @@ $(document).ready(function() {
       var task_Id = $(this).data('task-id');
       console.log(task_Id)
       $.ajax({
-        url: "{% url 'task_edit' project_id 0 %}".replace('0', task_Id),
+        url: "{% url 'projects:task_edit' project_id 0 %}".replace('0', task_Id),
         type: "get",
         dataType: "html",
         cache: false,
@@ -322,7 +322,7 @@ $(document).on('submit', '#taskForm', function(e) {
 
     if (formAction === 'create') {
     $.ajax({
-        url: "{% url 'task_create' project_id %}",
+        url: "{% url 'projects:task_create' project_id %}",
         type: $(this).attr('method'),
         data: $(this).serialize() + "&csrfmiddlewaretoken=" + $("input[name=csrfmiddlewaretoken]").val(),
         beforeSend: function(xhr) {
@@ -341,7 +341,7 @@ $(document).on('submit', '#taskForm', function(e) {
             var iconHtml = '<i class="bi bi-check-circle-fill" style="color: #fff; margin-right: 5px;"></i>';
             var message = response.message || defaultMessage;
             var linkText = "Details"; // Or any default link text you prefer
-            var url = "{% url 'task_detail' project_id 0 %}".replace('0', response.pk ) || "#"; // Default URL if none is provided
+            var url = "{% url 'projects:task_detail' project_id 0 %}".replace('0', response.pk ) || "#"; // Default URL if none is provided
 
             $('#liveToast #toastMessage').html(iconHtml + message + '<a href="' + url + '" class="toast-link alert-link"><u>' + linkText + '</u> <i class="bi bi-box-arrow-up-right"></a>');
 
@@ -382,7 +382,7 @@ $(document).ready(function() {
   
   function refreshTaskList() {
     $.ajax({
-        url: "{% url 'task_list' project.pk %}",  // URL to the Django view that returns the task list partial
+        url: "{% url 'projects:task_list' project.pk %}",  // URL to the Django view that returns the task list partial
         type: 'GET',
         success: function(response) {
             $('#connectionsTabContent').html(response);  // Replace the content of the task list container
@@ -410,66 +410,65 @@ $(document).ready(function() {
     $(document).on('click', '#offcanvasRightUpdate', function() {
         bsOffcanvas.hide(); // This will also trigger the 'hidden.bs.offcanvas' event
     });
+  });
 
+// Detect any change in the form
+$(document).on('change', '#taskForm', function(e) {
+    e.preventDefault(); // Prevent the default form submit action
+    var formAction = $(this).data('action');
+    var url = $(this).attr('action');
 
-});
+    $.ajax({
+        url: url, // URL to the Django view
+        type: 'POST',
+        data: $(this).serialize() + "&csrfmiddlewaretoken=" + $("input[name=csrfmiddlewaretoken]").val(),
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+      },
+        dataType: 'json',
+        success: function(response) {
+            if(response.success) {
+              // Dynamically update the message part
+              var defaultMessage = "Task updated successfully";
+              var iconHtml = '<i class="bi bi-check-circle-fill" style="color: #fff; margin-right: 5px;"></i>';
+              var message = response.message || defaultMessage;
+              var linkText = "Details"; // Or any default link text you prefer
+              var url = "{% url 'projects:task_detail' project_id 0 %}".replace('0', response.pk ) || "#"; // Default URL if none is provided
 
-  // Detect any change in the form
-  $(document).on('change', '#taskForm', function(e) {
-      e.preventDefault(); // Prevent the default form submit action
-      var formAction = $(this).data('action');
-      var url = $(this).attr('action'); 
-      $.ajax({
-          url: url, // URL to the Django view
-          type: 'POST',
-          data: $(this).serialize() + "&csrfmiddlewaretoken=" + $("input[name=csrfmiddlewaretoken]").val(),
-          beforeSend: function(xhr) {
-            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-        },
-          dataType: 'json',
-          success: function(response) {
-              if(response.success) {
-                // Dynamically update the message part
-                var defaultMessage = "Task updated successfully";
-                var iconHtml = '<i class="bi bi-check-circle-fill" style="color: #fff; margin-right: 5px;"></i>';
-                var message = response.message || defaultMessage;
-                var linkText = "Details"; // Or any default link text you prefer
-                var url = "{% url 'task_detail' project_id 0 %}".replace('0', response.pk ) || "#"; // Default URL if none is provided
+              $('#liveToast #toastMessage').html(iconHtml + message + '<a href="' + url + '" class="toast-link alert-link"><u>' + linkText + '</u> <i class="bi bi-box-arrow-up-right"></a>');
 
-                $('#liveToast #toastMessage').html(iconHtml + message + '<a href="' + url + '" class="toast-link alert-link"><u>' + linkText + '</u> <i class="bi bi-box-arrow-up-right"></a>');
-
-                // Optionally, refresh the task list or show a success message
-                const liveToast = new bootstrap.Toast(document.querySelector('#liveToast'));  
-                liveToast.show();
-                // refreshTaskList();  // Refresh the task list
-              } else {
-                  alert(response.message);
-              }
-          },
-          error: function(xhr, status, error) {
-            // Handle form errors
-            if (xhr.status === 400) {
-                // Clear previous errors
-                $('.form-error').remove();
-  
-                // Parse the JSON response
-                var errors = JSON.parse(xhr.responseText);
-  
-                // Loop through the errors and display them
-                for (var key in errors) {
-                    if (errors.hasOwnProperty(key)) {
-                        // Append each error message to the respective form field
-                        var error = errors[key].join();
-                        $('<div class="form-error">' + error + '</div>').insertAfter('#id_' + key);
-                    }
-                }
+              // Optionally, refresh the task list or show a success message
+              const liveToast = new bootstrap.Toast(document.querySelector('#liveToast'));  
+              liveToast.show();
+              // refreshTaskList();  // Refresh the task list
             } else {
-                // Handle non-validation errors (optional)
-                console.error("An error occurred: ", status, error);
+                alert(response.message);
             }
+        },
+        error: function(xhr, status, error) {
+          // Handle form errors
+          if (xhr.status === 400) {
+              // Clear previous errors
+              $('.form-error').remove();
+
+              // Parse the JSON response
+              var errors = JSON.parse(xhr.responseText);
+
+              // Loop through the errors and display them
+              for (var key in errors) {
+                  if (errors.hasOwnProperty(key)) {
+                      // Append each error message to the respective form field
+                      var error = errors[key].join();
+                      $('<div class="form-error">' + error + '</div>').insertAfter('#id_' + key);
+                  }
+              }
+          } else {
+              // Handle non-validation errors (optional)
+              console.error("An error occurred: ", status, error);
           }
-      });
+        }
     });
+  });
   });
   </script>
   <script>

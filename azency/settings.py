@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'channels',
     'daphne',
+    'rest_framework',
 
     
     'django.contrib.admin',
@@ -142,7 +143,7 @@ LOGOUT_REDIRECT_URL = 'accounts:login'  # Adjust as needed
 LOGIN_URL = 'accounts:login'
 
 # Define the URL to redirect users to after login (e.g., project list view)
-LOGIN_REDIRECT_URL = 'project_list'
+LOGIN_REDIRECT_URL = 'projects:project_list'
 
 # Configure Channels
 ASGI_APPLICATION = 'azency.asgi.application'
@@ -153,4 +154,11 @@ CHANNEL_LAYERS = {
             "hosts": [('127.0.0.1', 6379)],  # Configure as per your Redis setup
         },
     },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    )
 }

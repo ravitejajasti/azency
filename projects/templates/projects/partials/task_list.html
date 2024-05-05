@@ -35,7 +35,7 @@
                         <div class="d-flex mb-5">
                           <div class="me-2">
                             <h4 class="text-wrap">{{ task.title }}</h4>
-                            <a class="stretched-link" type="button"   data-bs-toggle="offcanvas" data-task-id = {{ task.pk }} data-bs-target="#offcanvasRightUpdate" aria-controls="offcanvasRightUpdate" href="{% url 'task_detail' project_id task.pk %}"></a>
+                            <a class="stretched-link" type="button"   data-bs-toggle="offcanvas" data-task-id = {{ task.pk }} data-bs-target="#offcanvasRightUpdate" aria-controls="offcanvasRightUpdate" href="{% url 'projects:task_detail' project_id task.pk %}"></a>
   
                             <!-- Avatar Group -->
                             <div class="avatar-group avatar-group-sm">
