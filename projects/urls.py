@@ -16,10 +16,18 @@ urlpatterns = [
     path('<int:project_id>/tasks/<int:pk>/edit/', TaskUpdateView.as_view(), name='task_edit'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+#### API URLs
+# from django.urls import path
+# from .views import ProjectListAPIView, TaskListAPIView
+
+# urlpatterns += [
+#     path('api/projects/', ProjectListAPIView.as_view(), name='api_project_list'),
+#     path('api/tasks/<int:project_id>/', TaskListAPIView.as_view(), name='api_task_list'),
+# ]
 from django.urls import path
-from .views import ProjectListAPIView, TaskListAPIView
+from .views import TaskDeleteAPIView
 
 urlpatterns += [
-    path('api/projects/', ProjectListAPIView.as_view(), name='api_project_list'),
-    path('api/tasks/<int:project_id>/', TaskListAPIView.as_view(), name='api_task_list'),
+    # your other URL patterns...
+    path('api/projects/<int:project_id>/tasks/<int:task_id>/delete/', TaskDeleteAPIView.as_view(), name='task-delete-api'),
 ]

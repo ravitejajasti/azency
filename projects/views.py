@@ -159,7 +159,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse_lazy('task_list', kwargs={'project_id': self.object.project.id})
+        return reverse_lazy('projects:task_list', kwargs={'project_id': self.object.project.id})
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -233,19 +233,41 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
             return render(request, 'projects/partials/task_form.html', context)
         # Render the full page for non-AJAX requests
         return render(request, 'projects/partials/task_form.html', context)
-    
-from rest_framework.generics import ListAPIView
-from .serializers import ProjectSerializer, TaskSerializer
 
-class ProjectListAPIView(ListAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
 
-class TaskListAPIView(ListAPIView):
-    queryset = Task.objects.all().select_related('project').prefetch_related('comments')  # Improve performance
+###### API related Classes
+# from rest_framework.generics import ListAPIView
+# from .serializers import ProjectSerializer, TaskSerializer
 
+# class ProjectListAPIView(ListAPIView):
+#     queryset = Project.objects.all()
+#     serializer_class = ProjectSerializer
+
+# class TaskListAPIView(ListAPIView):
+#     queryset = Task.objects.all().select_related('project').prefetch_related('comments')  # Improve performance
+
+#     serializer_class = TaskSerializer
+
+#     def get_queryset(self):
+#         project_id = self.kwargs['project_id']
+#         return Task.objects.filter(project_id=project_id)
+
+from rest_framework.generics import DestroyAPIView
+from .models import Task
+from .serializers import TaskSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
+class TaskDeleteAPIView(DestroyAPIView):
+    queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        project_id = self.kwargs['project_id']
-        return Task.objects.filter(project_id=project_id)
+    def delete(self, request, *args, **kwargs):
+        project_id = kwargs.get('project_id')
+        task_id = kwargs.get('task_id')
+        task = get_object_or_404(Task, id=task_id, project_id=project_id)
+        self.check_object_permissions(request, task)
+        task.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
