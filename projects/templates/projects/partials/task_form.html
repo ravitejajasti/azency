@@ -23,7 +23,9 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="hidden" name="project" value="{{ form.instance.project_id }}">
-    {% if "create" in request.path %}
+
+
+    {% if "new" in request.path %}
     <button class="btn btn-primary" type="submit">Create</button>
     {% endif %}
 </form>

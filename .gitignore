@@ -1,1 +1,6 @@
 /static
+azency/__pycache__/*
+projects/__pycache__/*
+.vscode/
+.DS_Store
+templates/partials/.DS_Store

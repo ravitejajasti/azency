@@ -273,23 +273,48 @@
   </script>
 
 <script>
-$(document).ready(function() {
-    $(".btn-dashed-outline").click(function() {
-        $.ajax({
-            url: "{% url 'projects:task_create' project_id %}", // Adjust URL as needed
-            type: "get",
-            dataType: "html",
-            cache: false,
-            success: function(data) {
-                $("#taskFormPlaceholder").html(data);
+
+// CSRF Token
+function getCSRFToken() {
+    var csrfToken = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Check if the cookie's name is 'csrftoken'
+            if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken' + '=')) {
+                csrfToken = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                break;
             }
-        });
-    });
-});
-</script>
+        }
+    }
+    return csrfToken;
+}
+
+    let baseUrl = window.location.origin
+    // Define deleteTask globally
+    window.deleteTask = function(projectId, taskId) {
+        fetch(`${baseUrl}/projects/api/projects/${projectId}/tasks/${taskId}/delete/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Task deleted successfully');
+                // Handle UI updates or redirection here
+                refreshTaskList();
+            } else {
+                console.error('Failed to delete task', response);
+            }
+        })
+        .catch(error => console.error('Error deleting task:', error));
+    };
 
 
-<script>
+// Dynamically load UpdateTask Canvas
   $(document).ready(function() {
     // Delegate click event to dynamically loaded elements as well
     $(document).on('click', '[data-bs-target="#offcanvasRightUpdate"]', function() {
@@ -313,9 +338,31 @@ $(document).ready(function() {
     });
   });
   
-  </script>
+// Dynamically load CreateTask Canvas
+  $(document).ready(function() {
+    // Delegate click event to dynamically loaded elements as well
+    $(document).on('click', '[data-bs-target="#offcanvasRight"]', function() {
+      console.log("Canvas opened")
+      var task_Id = $(this).data('task-id');
+      console.log(task_Id)
+      $.ajax({
+        url: "{% url 'projects:task_create' project_id %}",
+        type: "get",
+        dataType: "html",
+        cache: false,
+        success: function(data) {
+          $("#taskFormPlaceholder").html(data);
+          var offcanvasInstance = new bootstrap.Offcanvas($('#offcanvasRight'));
+          offcanvasInstance.show();
+        },
+        error: function(xhr, status, error) {
+          console.log("Error fetching task create form:", status, error);
+        }
+      });
+    });
+  });
   
-<script>
+//Submit TaskForm
 $(document).on('submit', '#taskForm', function(e) {
     e.preventDefault();
     var formAction = $(this).data('action');
@@ -375,12 +422,10 @@ $(document).on('submit', '#taskForm', function(e) {
     });
   };
 });
-</script>
 
-<script> 
-$(document).ready(function() {
-  
-  function refreshTaskList() {
+//refresh task list
+function refreshTaskList() {
+    console.log('Refreshing task list')
     $.ajax({
         url: "{% url 'projects:task_list' project.pk %}",  // URL to the Django view that returns the task list partial
         type: 'GET',
@@ -392,9 +437,16 @@ $(document).ready(function() {
         }
     });
   }
+  
+$(document).ready(function() {
+  
+
+  // refresh task list on off canvas close
   $(document).on('click', ".btn-close", function() {
     refreshTaskList();
   });
+
+  // close off canvas and refreshtasks
   $(document).ready(function() {
     var offcanvasElement = $('#offcanvasRightUpdate')[0];
 
@@ -412,7 +464,7 @@ $(document).ready(function() {
     });
   });
 
-// Detect any change in the form
+// Detect any change in the form and save
 $(document).on('change', '#taskForm', function(e) {
     e.preventDefault(); // Prevent the default form submit action
     var formAction = $(this).data('action');
@@ -467,8 +519,8 @@ $(document).on('change', '#taskForm', function(e) {
               console.error("An error occurred: ", status, error);
           }
         }
+      });
     });
-  });
   });
   </script>
   <script>
@@ -481,5 +533,5 @@ $(document).on('change', '#taskForm', function(e) {
       // =======================================================
       HSCore.components.HSTomSelect.init('.js-select')
     })();
-  </script>     
+  </script>
 {% endblock %}
