@@ -18,7 +18,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Project, Task, Section
-from .serializers import ProjectSerializer, TaskSerializer, CommentSerializer
+from .serializers import ProjectSerializer, TaskSerializer, CommentSerializer, SectionSerializer, ProjectDetailSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import DestroyAPIView
@@ -113,3 +113,31 @@ class TaskDeleteAPIView(DestroyAPIView):
         self.check_object_permissions(request, task)
         task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class SectionListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = SectionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        project_id = self.kwargs['project_id']
+        return Section.objects.filter(project_id=project_id)
+
+    def perform_create(self, serializer):
+        project = get_object_or_404(Project, id=self.kwargs['project_id'])
+        serializer.save(project=project)
+
+class SectionRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SectionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        project_id = self.kwargs['project_id']
+        return Section.objects.filter(project_id=project_id)
+    
+class ProjectDetailAPIView(generics.RetrieveAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectDetailSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Project.objects.prefetch_related('members', 'sections', 'sections__tasks').all()
